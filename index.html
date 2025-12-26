@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tactical Manager Pro - Export & Import</title>
+    <title>Tactical Manager Pro - Nova Geração</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
-
         :root {
             --grass-dark: #1a4314;
             --grass-light: #245a1c;
             --field-line: rgba(255, 255, 255, 0.8);
         }
-
         body {
             font-family: 'Outfit', sans-serif;
             background-color: #020617;
@@ -21,7 +19,6 @@
             touch-action: manipulation;
             overflow-x: hidden;
         }
-
         .soccer-pitch-container { width: 100%; max-width: 800px; margin: 0 auto; padding: 10px; }
         .soccer-pitch {
             background: var(--grass-light);
@@ -35,10 +32,8 @@
             overflow: hidden;
             touch-action: none;
         }
-
-        .pitch-center-line { position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: var(--field-line); }
+        .pitch-center-line { position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: var(--field-line);}
         .pitch-center-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 20%; height: 26.6%; border: 2px solid var(--field-line); border-radius: 50%; }
-        
         .player-token {
             width: 44px; height: 44px; border-radius: 50%; position: absolute;
             cursor: grab; display: flex; align-items: center; justify-content: center;
@@ -46,451 +41,477 @@
             box-shadow: 0 8px 15px rgba(0,0,0,0.5); z-index: 30;
             user-select: none; background-size: cover; background-position: center;
         }
-
-        .pos-GK { background-color: #f59e0b; color: #000; }
-        .pos-DF { background-color: #3b82f6; color: #fff; }
-        .pos-MF { background-color: #10b981; color: #fff; }
-        .pos-FW { background-color: #ef4444; color: #fff; }
-
-        .nav-tab.active { background-color: #1e293b; color: #60a5fa; border-bottom: 3px solid #60a5fa; }
-        
+        .pos-GK  { background-color: #f59e0b; color: #000; }
+        .pos-DF  { background-color: #3b82f6; color: #fff; }
+        .pos-MF  { background-color: #10b981; color: #fff; }
+        .pos-FW  { background-color: #ef4444; color: #fff; }
+        .pos-LWB,.pos-RWB { background-color: #8b5cf6; color: #fff; }
+        .pos-CDM { background-color: #0891b2; color: #fff; }
+        .pos-CAM { background-color: #fde68a; color: #2d3748; }
+        .pos-LW,.pos-RW { background-color: #f472b6; color: #fff; }
+        .pos-CF  { background-color: #57534e; color: #fff; }
+        .nav-tab.active { background-color: #1e293b; color: #60a5fa; border-bottom: 3px solid #60a5fa;}
         .status-balloon {
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(12px); border: 1px solid #334155;
             border-radius: 16px; padding: 12px; width: 240px;
             position: fixed; z-index: 1000; display: none;
         }
-
-        .spinner {
-            width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 50%; border-top-color: #818cf8;
-            animation: spin 0.8s linear infinite;
-        }
+        .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: #818cf8; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-track { background: #020617;}
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        code { color: #93c5fd; font-size: 0.95em;}
+        hr { margin: 16px 0; border:0; border-top:1px solid #334155;}
     </style>
 </head>
 <body class="bg-slate-950">
 
-    <nav class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center gap-3">
-            <div class="bg-indigo-600 p-2 rounded-lg"><svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></div>
-            <div>
-                <h1 class="text-sm font-black text-white uppercase">TACTICAL PRO</h1>
-                <div class="flex gap-2 mt-0.5">
-                    <button onclick="exportData()" class="text-[7px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-0.5 rounded font-bold uppercase tracking-widest">Salvar Arquivo</button>
-                    <button onclick="document.getElementById('import-input').click()" class="text-[7px] bg-indigo-900/40 hover:bg-indigo-900/60 text-indigo-300 px-2 py-0.5 rounded font-bold uppercase tracking-widest">Abrir Arquivo</button>
-                    <input type="file" id="import-input" class="hidden" accept=".json" onchange="importData(this)">
-                </div>
+<nav class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex justify-between items-center sticky top-0 z-50">
+    <div class="flex items-center gap-3">
+        <div class="bg-indigo-600 p-2 rounded-lg"><svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></div>
+        <div>
+            <h1 class="text-sm font-black text-white uppercase">TACTICAL PRO</h1>
+            <div class="flex gap-2 mt-0.5">
+                <button onclick="exportData()" class="text-[7px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-0.5 rounded font-bold uppercase tracking-widest">Salvar Arquivo</button>
+                <button onclick="document.getElementById('import-input').click()" class="text-[7px] bg-indigo-900/40 hover:bg-indigo-900/60 text-indigo-300 px-2 py-0.5 rounded font-bold uppercase tracking-widest">Abrir Arquivo</button>
+                <input type="file" id="import-input" class="hidden" accept=".json" onchange="importData(this)">
             </div>
-        </div>
-        <div class="text-right">
-            <p class="text-[8px] text-slate-500 uppercase font-black">Prob. Vitória</p>
-            <p class="text-xl font-black text-emerald-400" id="win-rate-display">0%</p>
-        </div>
-    </nav>
-
-    <div class="bg-slate-900/80 backdrop-blur-md flex border-b border-slate-800 sticky top-[57px] z-40 overflow-x-auto">
-        <button onclick="switchTab('tab-field')" id="btn-tab-field" class="nav-tab active px-6 py-4 font-bold text-[10px] uppercase flex-1 whitespace-nowrap">Campo</button>
-        <button onclick="switchTab('tab-bench')" id="btn-tab-bench" class="nav-tab px-6 py-4 font-bold text-[10px] uppercase flex-1 whitespace-nowrap">Banco</button>
-        <button onclick="switchTab('tab-ai')" id="btn-tab-ai" class="nav-tab px-6 py-4 font-bold text-[10px] uppercase flex-1 whitespace-nowrap">Análise IA</button>
-        <button onclick="switchTab('tab-players')" id="btn-tab-players" class="nav-tab px-6 py-4 font-bold text-[10px] uppercase flex-1 whitespace-nowrap">Contratar</button>
-    </div>
-
-    <main class="p-4 pb-20">
-        <section id="tab-field" class="max-w-4xl mx-auto block">
-            <div class="soccer-pitch-container">
-                <div id="main-pitch" class="soccer-pitch aspect-[3/4] md:aspect-[4/3] w-full">
-                    <div class="pitch-center-line"></div>
-                    <div class="pitch-center-circle"></div>
-                    <!-- Linhas simplificadas para performance -->
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 border-2 border-white/30 w-1/3 h-[10%]"></div>
-                    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 border-2 border-white/30 w-1/3 h-[10%]"></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="tab-bench" class="hidden max-w-4xl mx-auto">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="bench-list"></div>
-            <div id="empty-bench" class="text-center py-20 text-slate-600 italic text-sm">Nenhum jogador reserva.</div>
-        </section>
-
-        <section id="tab-ai" class="hidden max-w-2xl mx-auto space-y-4">
-            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
-                <h2 class="text-lg font-black mb-4 text-indigo-400 uppercase text-center">Simulador Tático</h2>
-                <textarea id="rival-desc" rows="3" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-sm focus:border-indigo-500 outline-none mb-4" placeholder="Contra quem você vai jogar? (Ex: Time retrancado com pontas rápidos)"></textarea>
-                <button onclick="getAIAnalysis()" id="ai-btn" class="w-full bg-indigo-600 py-4 rounded-xl font-black text-xs flex items-center justify-center gap-2">
-                    <span id="ai-btn-text">GERAR RELATÓRIO TÁTICO</span>
-                    <div id="ai-spinner" class="spinner hidden"></div>
-                </button>
-            </div>
-            
-            <div id="ai-analysis-card" class="hidden bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
-                <div class="bg-indigo-600/10 p-4 border-b border-slate-800 flex justify-between items-center">
-                    <span class="text-[10px] font-black uppercase text-indigo-400">Feedback do Consultor IA</span>
-                    <span id="ai-pred-winrate" class="text-lg font-black text-emerald-400">0%</span>
-                </div>
-                <div id="ai-result" class="p-6 text-sm leading-relaxed text-slate-300"></div>
-                
-                <div class="p-6 pt-0 border-t border-slate-800/50 mt-2">
-                    <p class="text-[9px] font-black text-slate-500 uppercase mb-2 italic">Refinar análise ou dar mais ordens:</p>
-                    <div class="flex gap-2">
-                        <input type="text" id="ai-feedback" class="flex-1 bg-slate-950 border border-slate-800 p-3 rounded-lg text-xs outline-none focus:border-indigo-500" placeholder="Ex: E se eu tirar um atacante e colocar um volante?">
-                        <button onclick="getAIAnalysis(true)" class="bg-indigo-600 px-4 rounded-lg">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="tab-players" class="hidden max-w-xl mx-auto">
-             <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
-                <h2 class="text-xl font-black mb-6 text-center uppercase tracking-tighter">Novo Contrato</h2>
-                <div class="flex justify-center mb-6">
-                    <div class="w-20 h-20 rounded-full border-2 border-dashed border-slate-700 flex items-center justify-center cursor-pointer overflow-hidden bg-slate-950" onclick="document.getElementById('p-photo').click()">
-                        <img id="photo-preview-img" class="hidden h-full w-full object-cover">
-                        <span id="photo-icon" class="text-slate-600 font-bold text-[10px]">FOTO</span>
-                        <input type="file" id="p-photo" class="hidden" accept="image/*" onchange="previewPhoto(this)">
-                    </div>
-                </div>
-                <div class="space-y-4">
-                    <input type="text" id="p-name" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-sm outline-none" placeholder="Nome do Craque">
-                    <div class="grid grid-cols-2 gap-3">
-                        <select id="p-pos" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-xs">
-                            <option value="GK">Goleiro (GK)</option>
-                            <option value="DF">Defesa (DF)</option>
-                            <option value="MF">Meio (MF)</option>
-                            <option value="FW">Ataque (FW)</option>
-                        </select>
-                        <input type="text" id="p-spec" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-sm" placeholder="Ex: Batedor de falta">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label class="text-[9px] text-slate-500 uppercase ml-2">Ataque (0-100)</label>
-                            <input type="number" id="p-atk" value="50" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[9px] text-slate-500 uppercase ml-2">Defesa (0-100)</label>
-                            <input type="number" id="p-def" value="50" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl">
-                        </div>
-                    </div>
-                    <textarea id="p-notes" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-sm outline-none" rows="2" placeholder="Características extras..."></textarea>
-                    <button onclick="createNewPlayer()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-xl font-black text-xs uppercase transition-all">Contratar Jogador</button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Modal de Jogador -->
-    <div id="status-balloon" class="status-balloon">
-        <div class="flex justify-between items-start mb-3">
-            <div>
-                <h4 id="balloon-name" class="font-black text-white text-xs truncate">Nome</h4>
-                <span id="balloon-pos-tag" class="text-[7px] px-1.5 py-0.5 rounded bg-indigo-600 text-white font-bold uppercase mt-1 inline-block">MF</span>
-            </div>
-            <button onclick="hideBalloon()" class="text-slate-500 hover:text-white">✕</button>
-        </div>
-        <textarea id="balloon-notes" onchange="updatePlayerNotes(this.value)" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-lg text-[10px] text-slate-300 outline-none mb-3" rows="2" placeholder="Notas sobre este jogador..."></textarea>
-        <div class="flex gap-2">
-            <button onclick="sendToBench()" class="flex-1 bg-slate-800 py-2 rounded-lg text-[9px] font-black uppercase">Banco</button>
-            <button onclick="firePlayer()" class="flex-1 bg-red-900/20 py-2 rounded-lg text-[9px] font-black uppercase text-red-400 border border-red-900/20">Demitir</button>
         </div>
     </div>
+    <div class="text-right">
+        <p class="text-[8px] text-slate-500 uppercase font-black">Prob. Vitória</p>
+        <p class="text-xl font-black text-emerald-400" id="win-rate-display">0%</p>
+    </div>
+</nav>
 
-    <script>
-        // --- ESTADO GLOBAL ---
-        let players = [];
-        let activePlayerId = null;
-        let currentPhotoBase64 = null;
-        let lastAnalysis = "";
+<div class="bg-slate-900/80 backdrop-blur-md flex border-b border-slate-800 sticky top-[57px] z-40 overflow-x-auto">
+    <button onclick="switchTab('tab-field')" id="btn-tab-field" class="nav-tab active px-6 py-4 font-bold text-[10px] uppercase flex-1 whitespace-nowrap">Campo</button>
+    <button onclick="switchTab('tab-bench')" id="btn-tab-bench" class="nav-tab px-6 py-4 font-bold text-[10px] uppercase flex-1 whitespace-nowrap">Banco</button>
+    <button onclick="switchTab('tab-ai')" id="btn-tab-ai" class="nav-tab px-6 py-4 font-bold text-[10px] uppercase flex-1 whitespace-nowrap">Análise IA</button>
+    <button onclick="switchTab('tab-players')" id="btn-tab-players" class="nav-tab px-6 py-4 font-bold text-[10px] uppercase flex-1 whitespace-nowrap">Contratar</button>
+</div>
 
-        // Inicialização
-        window.onload = () => {
-            const saved = localStorage.getItem('tactical_pro_backup');
-            if (saved) {
-                players = JSON.parse(saved);
+<main class="p-4 pb-20">
+    <!-- CAMPO -->
+    <section id="tab-field" class="max-w-4xl mx-auto block">
+        <div class="soccer-pitch-container">
+            <div id="main-pitch" class="soccer-pitch aspect-[3/4] md:aspect-[4/3] w-full">
+                <div class="pitch-center-line"></div>
+                <div class="pitch-center-circle"></div>
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 border-2 border-white/30 w-1/3 h-[10%]"></div>
+                <div class="absolute bottom-0 left-1/2 -translate-x-1/2 border-2 border-white/30 w-1/3 h-[10%]"></div>
+            </div>
+        </div>
+    </section>
+    <!-- BANCO -->
+    <section id="tab-bench" class="hidden max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="bench-list"></div>
+        <div id="empty-bench" class="text-center py-20 text-slate-600 italic text-sm">Nenhum jogador reserva.</div>
+    </section>
+    <!-- ANÁLISE IA -->
+    <section id="tab-ai" class="hidden max-w-2xl mx-auto space-y-4">
+        <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+            <h2 class="text-lg font-black mb-4 text-indigo-400 uppercase text-center">Simulador Tático</h2>
+            <textarea id="rival-desc" rows="3" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-sm focus:border-indigo-500 outline-none mb-4" placeholder="Contra quem você vai jogar? (Ex: Time retrancado com pontas rápidos, 4-3-3, etc)"></textarea>
+            <button onclick="getAIAnalysis()" id="ai-btn" class="w-full bg-indigo-600 py-4 rounded-xl font-black text-xs flex items-center justify-center gap-2">
+                <span id="ai-btn-text">GERAR RELATÓRIO TÁTICO</span>
+                <div id="ai-spinner" class="spinner hidden"></div>
+            </button>
+        </div>
+        <div id="ai-analysis-card" class="hidden bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden">
+            <div class="bg-indigo-600/10 p-4 border-b border-slate-800 flex justify-between items-center">
+                <span class="text-[10px] font-black uppercase text-indigo-400">Feedback do Consultor IA</span>
+                <span id="ai-pred-winrate" class="text-lg font-black text-emerald-400">0%</span>
+            </div>
+            <div id="ai-result" class="p-6 text-sm leading-relaxed text-slate-300"></div>
+            <div class="p-6 pt-0 border-t border-slate-800/50 mt-2">
+                <p class="text-[9px] font-black text-slate-500 uppercase mb-2 italic">Refinar análise ou dar mais ordens:</p>
+                <div class="flex gap-2">
+                    <input type="text" id="ai-feedback" class="flex-1 bg-slate-950 border border-slate-800 p-3 rounded-lg text-xs outline-none focus:border-indigo-500" placeholder="Ex: E se eu colocar 3 zagueiros e tirar o lateral?">
+                    <button onclick="getAIAnalysis(true)" class="bg-indigo-600 px-4 rounded-lg">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- CONTRATAR -->
+    <section id="tab-players" class="hidden max-w-xl mx-auto">
+        <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+            <h2 class="text-xl font-black mb-6 text-center uppercase tracking-tighter">Novo Contrato</h2>
+            <div class="flex justify-center mb-6">
+                <div class="w-20 h-20 rounded-full border-2 border-dashed border-slate-700 flex items-center justify-center cursor-pointer overflow-hidden bg-slate-950" onclick="document.getElementById('p-photo').click()">
+                    <img id="photo-preview-img" class="hidden h-full w-full object-cover">
+                    <span id="photo-icon" class="text-slate-600 font-bold text-[10px]">FOTO</span>
+                    <input type="file" id="p-photo" class="hidden" accept="image/*" onchange="previewPhoto(this)">
+                </div>
+            </div>
+            <div class="space-y-4">
+                <input type="text" id="p-name" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-sm outline-none" placeholder="Nome do Craque">
+                <div class="grid grid-cols-2 gap-3">
+                    <select id="p-pos" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-xs">
+                        <option value="GK">Goleiro (GK)</option>
+                        <option value="DF">Zagueiro (DF)</option>
+                        <option value="LWB">Ala-Esquerdo (LWB)</option>
+                        <option value="RWB">Ala-Direito (RWB)</option>
+                        <option value="CDM">Volante (CDM)</option>
+                        <option value="MF">Meia (MF)</option>
+                        <option value="CAM">Meia Ofensivo (CAM)</option>
+                        <option value="LW">Ponta Esquerda (LW)</option>
+                        <option value="RW">Ponta Direita (RW)</option>
+                        <option value="FW">Atacante (FW)</option>
+                        <option value="CF">Centroavante (CF)</option>
+                    </select>
+                    <input type="text" id="p-spec" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-sm" placeholder="Especialidade (ex: Chuta forte)">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[9px] text-slate-500 uppercase ml-2">Ataque (0-100)</label>
+                        <input type="number" id="p-atk" value="50" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] text-slate-500 uppercase ml-2">Defesa (0-100)</label>
+                        <input type="number" id="p-def" value="50" class="w-full bg-slate-950 border border-slate-800 p-3 rounded-xl">
+                    </div>
+                </div>
+                <textarea id="p-notes" class="w-full bg-slate-950 border border-slate-800 p-4 rounded-xl text-sm outline-none" rows="2" placeholder="Características extras..."></textarea>
+                <button onclick="createNewPlayer()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-xl font-black text-xs uppercase transition-all">Contratar Jogador</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Modal -->
+<div id="status-balloon" class="status-balloon">
+    <div class="flex justify-between items-start mb-3">
+        <div>
+            <h4 id="balloon-name" class="font-black text-white text-xs truncate">Nome</h4>
+            <span id="balloon-pos-tag" class="text-[7px] px-1.5 py-0.5 rounded bg-indigo-600 text-white font-bold uppercase mt-1 inline-block">MF</span>
+        </div>
+        <button onclick="hideBalloon()" class="text-slate-500 hover:text-white">✕</button>
+    </div>
+    <textarea id="balloon-notes" onchange="updatePlayerNotes(this.value)" class="w-full bg-slate-950 border border-slate-800 p-2 rounded-lg text-[10px] text-slate-300 outline-none mb-3" rows="2" placeholder="Notas sobre este jogador..."></textarea>
+    <div class="flex gap-2">
+        <button onclick="sendToBench()" class="flex-1 bg-slate-800 py-2 rounded-lg text-[9px] font-black uppercase">Banco</button>
+        <button onclick="firePlayer()" class="flex-1 bg-red-900/20 py-2 rounded-lg text-[9px] font-black uppercase text-red-400 border border-red-900/20">Demitir</button>
+    </div>
+</div>
+
+<script>
+let players = [];
+let activePlayerId = null;
+let currentPhotoBase64 = null;
+let lastAnalysis = "";
+
+window.onload = () => {
+    const saved = localStorage.getItem('tactical_pro_backup');
+    if (saved) {
+        players = JSON.parse(saved);
+        renderAll();
+    }
+};
+
+function saveState() {
+    localStorage.setItem('tactical_pro_backup', JSON.stringify(players));
+    calculateWinRate();
+}
+
+// EXPORT/IMPORT
+function exportData() {
+    if (players.length === 0) {
+        alert("Adicione jogadores antes de salvar!"); return;
+    }
+    const dataStr = JSON.stringify(players, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const exportFileDefaultName = 'meu_time_tatico.json';
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+}
+function importData(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const imported = JSON.parse(e.target.result);
+            if (Array.isArray(imported)) {
+                players = imported;
                 renderAll();
+                alert("Time carregado com sucesso!");
             }
+        } catch (err) { alert("Erro ao ler o arquivo. Certifique-se que é um .json válido."); }
+    };
+    reader.readAsText(file);
+}
+
+// UI E NAVEGAÇÃO
+function switchTab(id) {
+    ['tab-field', 'tab-bench', 'tab-ai', 'tab-players'].forEach(t => {
+        document.getElementById(t).classList.add('hidden');
+        document.getElementById(`btn-${t}`).classList.remove('active');
+    });
+    document.getElementById(id).classList.remove('hidden');
+    document.getElementById(`btn-${id}`).classList.add('active');
+    hideBalloon();
+}
+function previewPhoto(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            currentPhotoBase64 = e.target.result;
+            document.getElementById('photo-preview-img').src = currentPhotoBase64;
+            document.getElementById('photo-preview-img').classList.remove('hidden');
+            document.getElementById('photo-icon').classList.add('hidden');
         };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+function createNewPlayer() {
+    const name = document.getElementById('p-name').value.trim();
+    if (!name) return;
+    const newP = {
+        id: 'p-' + Date.now(),
+        name,
+        pos: document.getElementById('p-pos').value,
+        atk: parseInt(document.getElementById('p-atk').value) || 50,
+        def: parseInt(document.getElementById('p-def').value) || 50,
+        spec: document.getElementById('p-spec').value,
+        notes: document.getElementById('p-notes').value,
+        photo: currentPhotoBase64,
+        onField: false,
+        x: 50, y: 50
+    };
+    players.push(newP);
+    saveState();
+    renderAll();
+    switchTab('tab-bench');
+    // Reset formulário
+    document.getElementById('p-name').value = "";
+    document.getElementById('p-notes').value = "";
+    document.getElementById('photo-preview-img').classList.add('hidden');
+    document.getElementById('photo-icon').classList.remove('hidden');
+    currentPhotoBase64 = null;
+}
+function renderAll() {
+    renderBench();
+    renderField();
+    calculateWinRate();
+}
+function renderBench() {
+    const list = document.getElementById('bench-list');
+    list.innerHTML = '';
+    const bench = players.filter(p => !p.onField);
+    if (bench.length > 0) document.getElementById('empty-bench').classList.add('hidden');
+    else document.getElementById('empty-bench').classList.remove('hidden');
+    bench.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'bg-slate-900 p-4 rounded-xl border border-slate-800 flex justify-between items-center';
+        div.innerHTML = `
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-slate-800 border-2 border-slate-700 overflow-hidden flex items-center justify-center font-black text-[9px] ${p.photo?'':'pos-'+p.pos}">
+                    ${p.photo ? `<img src="${p.photo}" class="w-full h-full object-cover">` : p.pos}
+                </div>
+                <div>
+                    <p class="text-xs font-black text-white">${p.name}</p>
+                    <p class="text-[8px] text-slate-500 font-bold uppercase">${p.spec || 'Jogador'}</p>
+                </div>
+            </div>
+            <button onclick="scalePlayer('${p.id}')" class="bg-indigo-600 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase">Escalar</button>
+        `;
+        list.appendChild(div);
+    });
+}
+function scalePlayer(id) {
+    const p = players.find(x => x.id === id);
+    p.onField = true;
+    // Posição inicial baseada na zona (mantém DF/volantes atrás, atacantes à frente, etc)
+    if(p.pos === 'GK')          { p.x = 50; p.y = 90; }
+    else if(p.pos === 'DF')     { p.x = 50; p.y = 70; }
+    else if(p.pos === 'CDM')    { p.x = 50; p.y = 65; }
+    else if(p.pos === 'LWB')    { p.x = 25; p.y = 65; }
+    else if(p.pos === 'RWB')    { p.x = 75; p.y = 65; }
+    else if(p.pos === 'MF')     { p.x = 50; p.y = 50; }
+    else if(p.pos === 'CAM')    { p.x = 50; p.y = 40; }
+    else if(p.pos === 'LW')     { p.x = 20; p.y = 30; }
+    else if(p.pos === 'RW')     { p.x = 80; p.y = 30; }
+    else if(p.pos === 'FW')     { p.x = 50; p.y = 20; }
+    else if(p.pos === 'CF')     { p.x = 50; p.y = 12; }
+    else                       { p.x = 50; p.y = 50; }
+    saveState();
+    renderAll();
+    switchTab('tab-field');
+}
+function renderField() {
+    const pitch = document.getElementById('main-pitch');
+    pitch.querySelectorAll('.player-token').forEach(t => t.remove());
+    players.filter(p => p.onField).forEach(p => {
+        const t = document.createElement('div');
+        t.className = `player-token pos-${p.pos}`;
+        t.style.left = `calc(${p.x}% - 22px)`;
+        t.style.top = `calc(${p.y}% - 22px)`;
+        if (p.photo) t.style.backgroundImage = `url(${p.photo})`;
+        else t.innerText = p.name.substring(0,2).toUpperCase();
+        t.onmousedown = (e) => startDrag(e, p.id, t);
+        t.ontouchstart = (e) => startDrag(e, p.id, t);
+        t.onclick = (e) => { e.stopPropagation(); showBalloon(p, t); };
+        pitch.appendChild(t);
+    });
+}
+function startDrag(e, id, el) {
+    const rect = document.getElementById('main-pitch').getBoundingClientRect();
+    const p = players.find(x => x.id === id);
+    let moved = false;
+    const move = (ev) => {
+        moved = true;
+        const cx = ev.touches ? ev.touches[0].clientX : ev.clientX;
+        const cy = ev.touches ? ev.touches[0].clientY : ev.clientY;
+        p.x = Math.max(5, Math.min(95, ((cx - rect.left) / rect.width) * 100));
+        p.y = Math.max(5, Math.min(95, ((cy - rect.top) / rect.height) * 100));
+        el.style.left = `calc(${p.x}% - 22px)`;
+        el.style.top = `calc(${p.y}% - 22px)`;
+        hideBalloon();
+    };
+    const stop = () => { window.onmousemove = window.ontouchmove = null; if(moved) saveState(); };
+    window.onmousemove = window.ontouchmove = move;
+    window.onmouseup = window.ontouchend = stop;
+}
+function showBalloon(p, el) {
+    activePlayerId = p.id;
+    const b = document.getElementById('status-balloon');
+    const rect = el.getBoundingClientRect();
+    document.getElementById('balloon-name').innerText = p.name;
+    document.getElementById('balloon-pos-tag').innerText = p.pos;
+    document.getElementById('balloon-notes').value = p.notes || "";
+    b.style.display = 'block';
+    b.style.top = (rect.top - 160) + 'px';
+    b.style.left = Math.max(10, Math.min(window.innerWidth - 250, rect.left - 100)) + 'px';
+}
+function hideBalloon() { document.getElementById('status-balloon').style.display = 'none'; }
+function updatePlayerNotes(val) {
+    const p = players.find(x => x.id === activePlayerId);
+    if(p) { p.notes = val; saveState(); }
+}
+function sendToBench() {
+    const p = players.find(x => x.id === activePlayerId);
+    if(p) { p.onField = false; saveState(); renderAll();}
+    hideBalloon();
+}
+function firePlayer() {
+    players = players.filter(x => x.id !== activePlayerId);
+    saveState(); renderAll(); hideBalloon();
+}
+function calculateWinRate() {
+    const f = players.filter(p => p.onField);
+    const display = document.getElementById('win-rate-display');
+    if (f.length === 0) { display.innerText = "0%"; return; }
+    const avg = f.reduce((a,b) => a + (b.atk + b.def)/2, 0) / f.length;
+    const rate = Math.min(Math.round((avg * (f.length/11)) + 5), 99);
+    display.innerText = rate + "%";
+}
 
-        function saveState() {
-            localStorage.setItem('tactical_pro_backup', JSON.stringify(players));
-            calculateWinRate();
-        }
+// IA INTEGRATION — versão aprimorada
+async function getAIAnalysis(isFeedback = false) {
+    const btn = document.getElementById('ai-btn');
+    const resDiv = document.getElementById('ai-result');
+    const feedInput = document.getElementById('ai-feedback');
+    const apiKey = "AIzaSyAOMltXZ_BBjNppXDWoCeZFh-XtZUWhZLc"; // <-- coloque sua chave Gemini aqui
 
-        // --- SISTEMA DE ARQUIVOS (EXPORT/IMPORT) ---
-        function exportData() {
-            if (players.length === 0) {
-                alert("Adicione jogadores antes de salvar!");
-                return;
-            }
-            const dataStr = JSON.stringify(players, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = 'meu_time_tatico.json';
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-        }
+    const field = players.filter(p => p.onField);
+    if (!field.length) { alert("Escale jogadores primeiro!"); return; }
 
-        function importData(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (Array.isArray(imported)) {
-                        players = imported;
-                        renderAll();
-                        alert("Time carregado com sucesso!");
-                    }
-                } catch (err) {
-                    alert("Erro ao ler o arquivo. Certifique-se que é um .json válido.");
-                }
-            };
-            reader.readAsText(file);
-        }
+    // Gera JSON do time com as novas posições
+    const teamArray = field.map(p => ({
+        nome: p.name,
+        posicao: p.pos,
+        ataque: p.atk,
+        defesa: p.def,
+        especialidade: p.spec,
+        notas: p.notes
+    }));
 
-        // --- UI E NAVEGAÇÃO ---
-        function switchTab(id) {
-            ['tab-field', 'tab-bench', 'tab-ai', 'tab-players'].forEach(t => {
-                document.getElementById(t).classList.add('hidden');
-                document.getElementById(`btn-${t}`).classList.remove('active');
-            });
-            document.getElementById(id).classList.remove('hidden');
-            document.getElementById(`btn-${id}`).classList.add('active');
-            hideBalloon();
-        }
+    const teamJSON = JSON.stringify(teamArray, null, 2);
+    const rivalText = document.getElementById('rival-desc').value;
 
-        function previewPhoto(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    currentPhotoBase64 = e.target.result;
-                    document.getElementById('photo-preview-img').src = currentPhotoBase64;
-                    document.getElementById('photo-preview-img').classList.remove('hidden');
-                    document.getElementById('photo-icon').classList.add('hidden');
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+    let userPrompt = `
+MEU TIME (em JSON):
+${teamJSON}
 
-        function createNewPlayer() {
-            const name = document.getElementById('p-name').value;
-            if (!name) return;
-            
-            const newP = {
-                id: 'p-' + Date.now(),
-                name,
-                pos: document.getElementById('p-pos').value,
-                atk: parseInt(document.getElementById('p-atk').value) || 50,
-                def: parseInt(document.getElementById('p-def').value) || 50,
-                spec: document.getElementById('p-spec').value,
-                notes: document.getElementById('p-notes').value,
-                photo: currentPhotoBase64,
-                onField: false,
-                x: 50, y: 50
-            };
-            
-            players.push(newP);
-            saveState();
-            renderAll();
-            switchTab('tab-bench');
-            
-            // Reset formulário
-            document.getElementById('p-name').value = "";
-            document.getElementById('p-notes').value = "";
-            document.getElementById('photo-preview-img').classList.add('hidden');
-            document.getElementById('photo-icon').classList.remove('hidden');
-            currentPhotoBase64 = null;
-        }
+DESCRIÇÃO DO ADVERSÁRIO:
+${rivalText}
+`;
 
-        function renderAll() {
-            renderBench();
-            renderField();
-            calculateWinRate();
-        }
+    if (isFeedback && feedInput.value.trim()) {
+        userPrompt += `
+INSTRUÇÕES OU DÚVIDAS DO TREINADOR:
+${feedInput.value}
+`;
+    }
 
-        function renderBench() {
-            const list = document.getElementById('bench-list');
-            list.innerHTML = '';
-            const bench = players.filter(p => !p.onField);
-            
-            if (bench.length > 0) document.getElementById('empty-bench').classList.add('hidden');
-            else document.getElementById('empty-bench').classList.remove('hidden');
+    const systemPrompt = `
+Você é um analista tático de futebol profissional.
+Analise o time (JSON, incluindo novas posições) e o adversário, e responda em PORTUGUÊS, só nesse JSON:
 
-            bench.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'bg-slate-900 p-4 rounded-xl border border-slate-800 flex justify-between items-center';
-                div.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-slate-800 border-2 border-slate-700 overflow-hidden flex items-center justify-center font-black text-[9px] ${p.photo?'':'pos-'+p.pos}">
-                            ${p.photo ? `<img src="${p.photo}" class="w-full h-full object-cover">` : p.pos}
-                        </div>
-                        <div>
-                            <p class="text-xs font-black text-white">${p.name}</p>
-                            <p class="text-[8px] text-slate-500 font-bold uppercase">${p.spec || 'Jogador'}</p>
-                        </div>
-                    </div>
-                    <button onclick="scalePlayer('${p.id}')" class="bg-indigo-600 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase">Escalar</button>
-                `;
-                list.appendChild(div);
-            });
-        }
+{
+  "winRate": number, 
+  "estrategia_geral": "string markdown explicando a estratégia geral e lógica",
+  "ataque": "string markdown: plano ofensivo",
+  "defesa": "string markdown: plano defensivo",
+  "jogadores_destaque": "nomes ou funções do MEU TIME decisivos para o jogo",
+  "riscos": "fraquezas, riscos ou pontos de atenção"
+}
 
-        function scalePlayer(id) {
-            const p = players.find(x => x.id === id);
-            p.onField = true;
-            // Posição inicial baseada na zona
-            if(p.pos === 'GK') { p.x = 50; p.y = 90; }
-            else if(p.pos === 'DF') { p.x = 50; p.y = 70; }
-            else if(p.pos === 'MF') { p.x = 50; p.y = 50; }
-            else { p.x = 50; p.y = 20; }
-            
-            saveState();
-            renderAll();
-            switchTab('tab-field');
-        }
+A resposta deve ser apenas o JSON acima — analítico, didático e fácil de aplicar.
+`;
 
-        function renderField() {
-            const pitch = document.getElementById('main-pitch');
-            pitch.querySelectorAll('.player-token').forEach(t => t.remove());
-            
-            players.filter(p => p.onField).forEach(p => {
-                const t = document.createElement('div');
-                t.className = `player-token pos-${p.pos}`;
-                t.style.left = `calc(${p.x}% - 22px)`;
-                t.style.top = `calc(${p.y}% - 22px)`;
-                
-                if (p.photo) t.style.backgroundImage = `url(${p.photo})`;
-                else t.innerText = p.name.substring(0,2).toUpperCase();
-                
-                t.onmousedown = (e) => startDrag(e, p.id, t);
-                t.ontouchstart = (e) => startDrag(e, p.id, t);
-                t.onclick = (e) => { e.stopPropagation(); showBalloon(p, t); };
-                
-                pitch.appendChild(t);
-            });
-        }
+    btn.disabled = true;
+    document.getElementById('ai-spinner').classList.remove('hidden');
+    document.getElementById('ai-analysis-card').classList.remove('hidden');
 
-        function startDrag(e, id, el) {
-            const rect = document.getElementById('main-pitch').getBoundingClientRect();
-            const p = players.find(x => x.id === id);
-            let moved = false;
-
-            const move = (ev) => {
-                moved = true;
-                const cx = ev.touches ? ev.touches[0].clientX : ev.clientX;
-                const cy = ev.touches ? ev.touches[0].clientY : ev.clientY;
-                p.x = Math.max(5, Math.min(95, ((cx - rect.left) / rect.width) * 100));
-                p.y = Math.max(5, Math.min(95, ((cy - rect.top) / rect.height) * 100));
-                el.style.left = `calc(${p.x}% - 22px)`;
-                el.style.top = `calc(${p.y}% - 22px)`;
-                hideBalloon();
-            };
-
-            const stop = () => {
-                window.onmousemove = window.ontouchmove = null;
-                if(moved) saveState();
-            };
-
-            window.onmousemove = window.ontouchmove = move;
-            window.onmouseup = window.ontouchend = stop;
-        }
-
-        function showBalloon(p, el) {
-            activePlayerId = p.id;
-            const b = document.getElementById('status-balloon');
-            const rect = el.getBoundingClientRect();
-            document.getElementById('balloon-name').innerText = p.name;
-            document.getElementById('balloon-pos-tag').innerText = p.pos;
-            document.getElementById('balloon-notes').value = p.notes || "";
-            b.style.display = 'block';
-            b.style.top = (rect.top - 160) + 'px';
-            b.style.left = Math.max(10, Math.min(window.innerWidth - 250, rect.left - 100)) + 'px';
-        }
-
-        function hideBalloon() { document.getElementById('status-balloon').style.display = 'none'; }
-
-        function updatePlayerNotes(val) {
-            const p = players.find(x => x.id === activePlayerId);
-            if(p) { p.notes = val; saveState(); }
-        }
-
-        function sendToBench() {
-            const p = players.find(x => x.id === activePlayerId);
-            if(p) { p.onField = false; saveState(); renderAll(); }
-            hideBalloon();
-        }
-
-        function firePlayer() {
-            players = players.filter(x => x.id !== activePlayerId);
-            saveState();
-            renderAll();
-            hideBalloon();
-        }
-
-        function calculateWinRate() {
-            const f = players.filter(p => p.onField);
-            const display = document.getElementById('win-rate-display');
-            if (f.length === 0) { display.innerText = "0%"; return; }
-            const avg = f.reduce((a,b) => a + (b.atk + b.def)/2, 0) / f.length;
-            const rate = Math.min(Math.round((avg * (f.length/11)) + 5), 99);
-            display.innerText = rate + "%";
-        }
-
-        // --- IA INTEGRATION ---
-        async function getAIAnalysis(isFeedback = false) {
-            const btn = document.getElementById('ai-btn');
-            const resDiv = document.getElementById('ai-result');
-            const feedInput = document.getElementById('ai-feedback');
-            const apiKey = ""; // Chave do sistema
-            
-            const field = players.filter(p => p.onField).map(p => `- ${p.name} (${p.pos}): Atk ${p.atk}, Def ${p.def}. Notas: ${p.notes}`).join('\n');
-            if (!field) { alert("Escale jogadores primeiro!"); return; }
-
-            btn.disabled = true;
-            document.getElementById('ai-spinner').classList.remove('hidden');
-            document.getElementById('ai-analysis-card').classList.remove('hidden');
-
-            const systemPrompt = "Você é um analista tático de futebol. Analise a escalação e o rival. Responda em JSON: { 'winRate': number, 'analysis': 'string em markdown' }";
-            let userPrompt = `MEU TIME:\n${field}\n\nRIVAL: ${document.getElementById('rival-desc').value}`;
-            
-            if (isFeedback) {
-                userPrompt += `\n\nFEEDBACK DO TREINADOR: "${feedInput.value}"\nÚLTIMA ANÁLISE: ${lastAnalysis}`;
-            }
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        contents: [{ parts: [{ text: userPrompt }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] },
-                        generationConfig: { responseMimeType: "application/json" }
-                    })
-                });
-                const data = await response.json();
-                const res = JSON.parse(data.candidates[0].content.parts[0].text);
-                lastAnalysis = res.analysis;
-                document.getElementById('ai-pred-winrate').innerText = res.winRate + '%';
-                resDiv.innerHTML = res.analysis;
-                if (isFeedback) feedInput.value = "";
-            } catch (e) {
-                resDiv.innerText = "Houve um erro na comunicação com a IA. Verifique sua conexão.";
-            } finally {
-                btn.disabled = false;
-                document.getElementById('ai-spinner').classList.add('hidden');
-            }
-        }
-    </script>
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: { responseMimeType: "application/json" }
+            })
+        });
+        const data = await response.json();
+        const geminiContent = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!geminiContent) throw new Error("A IA não respondeu.");
+        const res = JSON.parse(geminiContent);
+        lastAnalysis = [res.estrategia_geral, res.ataque, res.defesa].filter(Boolean).join("\n");
+        // Se quiser exibir em abas/cards, use os campos abaixo
+        document.getElementById('ai-pred-winrate').innerText = (res.winRate ?? 0) + '%';
+        resDiv.innerHTML = `
+<strong>Estratégia Geral:</strong><br>
+${res.estrategia_geral || ""}
+<hr>
+<strong>Ataque:</strong> <br>
+${res.ataque || ""}
+<hr>
+<strong>Defesa:</strong> <br>
+${res.defesa || ""}
+<hr>
+<strong>Jogadores Destaque:</strong> <br>
+${res.jogadores_destaque || ""}
+<br>
+<strong>Riscos/Pontos de Atenção:</strong> <br>
+${res.riscos || ""}
+        `;
+        if (isFeedback) feedInput.value = "";
+    } catch (e) {
+        resDiv.innerHTML = `<span class="text-red-400">Houve um erro na comunicação com a IA. Detalhes: ${e.message || e}</span>`;
+    } finally {
+        btn.disabled = false;
+        document.getElementById('ai-spinner').classList.add('hidden');
+    }
+}
+</script>
 </body>
 </html>
-
